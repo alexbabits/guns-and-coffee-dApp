@@ -1,6 +1,4 @@
-// Deployed BuyMeACoffee.sol at address: 0xb4038DE65e412a5Aab139d1F12840171cE2D1D2C
-
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
 import "hardhat/console.sol";

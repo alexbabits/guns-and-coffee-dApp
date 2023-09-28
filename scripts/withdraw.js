@@ -7,8 +7,6 @@ async function getSpecificBalance(provider, address) {
   }
 
 async function main() {
-  // ethers v6.7.1: 
-  // working: 0xcEeD1b64F19Ad514eb9e1dFb53409cD063C87f85
   // Get the contract that has been deployed to Sepolia. Double check address.
   const contractAddress="0x00885e2b1Bbc06555d65303a6cBe9509B4DA16C9";
   const contractABI = abi.abi;
