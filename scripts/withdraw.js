@@ -8,7 +8,7 @@ async function getSpecificBalance(provider, address) {
 
 async function main() {
   // Get the contract that has been deployed to Sepolia. Double check address.
-  const contractAddress="0x5e3a6814E26819048EbdaBcAE4654791373456a0";
+  const contractAddress="0x3AD8B84366A563dB8B6D46e01c0bda2e4e89563f";
   const contractABI = abi.abi;
 
   // Get the node connection and wallet connection.
@@ -29,7 +29,7 @@ async function main() {
   // Withdraw funds if there are funds to withdraw.
   if (contractBalance !== "0.0") {
     console.log("withdrawing funds..")
-    const withdrawTxn = await buyMeACoffee.withdrawTips();
+    const withdrawTxn = await buyMeACoffee.withdrawFunds();
     await withdrawTxn.wait();
   } else {
     console.log("no funds to withdraw!");

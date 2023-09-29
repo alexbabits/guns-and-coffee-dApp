@@ -41,9 +41,9 @@ contract BuyMeACoffee {
 
     // Allows anyone to buy coffee, specifying their name and message on the frontend.
     function buyCoffee(string memory _name, string memory _message, uint256 _totalPriceInWei) public payable {
-        // Must accept more than 0 ETH for a coffee.
+        // Must accept more than 0 ETH for a coffee, value on frontend must match.
         require(msg.value > 0, "can't buy coffee for free!");
-        //require(msg.value == _totalPriceInWei, "Passed totalPriceInWei does not match transaction value!");
+        require(msg.value == _totalPriceInWei, "Passed totalPriceInWei does not match transaction value!");
 
         // Add the memo to memos array.
         memos.push(Memo(
@@ -68,7 +68,7 @@ contract BuyMeACoffee {
     }
 
     // Allows owner to withdraw tips by calling withdraw.js script.
-    function withdrawTips() public {
+    function withdrawFunds() public {
         require(msg.sender == owner);
         owner.transfer(address(this).balance);
     }

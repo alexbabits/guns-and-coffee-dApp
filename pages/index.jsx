@@ -7,7 +7,7 @@ import styles from '../styles/Home.module.css';
 
 export default function Home() {
 	// Contract Address & ABI
-	const contractAddress = '0x5e3a6814E26819048EbdaBcAE4654791373456a0';
+	const contractAddress = '0x3AD8B84366A563dB8B6D46e01c0bda2e4e89563f';
 	const contractABI = abi.abi;
 
 	// Component state. (Allows for storing of values that may change and cause re-rendering)
@@ -105,10 +105,10 @@ export default function Home() {
 				// Calls `buyCoffee` function from smart contract
 				// Passes in name, message, total price
 				// value is the actual override indicating amount of eth to be sent with transaction.
-				console.log('buying coffee..');
+				console.log('Processing item purchase, please wait...');
 				const coffeeTxn = await buyMeACoffee.buyCoffee(
-					name ? name : 'anon',
-					message ? message : 'Enjoy your coffee!',
+					name ? name : 'Anonymous',
+					message ? message : 'None.',
 					totalPriceInWei,
 					{ value: totalPriceInWei.toString() }
 				);
@@ -116,8 +116,7 @@ export default function Home() {
 				// wait for tx to be mined, update counter and log hash.
 				await coffeeTxn.wait();
 				getTotalPurchases();
-				console.log('mined ', coffeeTxn.hash);
-				console.log('coffee purchased!');
+				console.log('Item successfully purchased! On chain tx hash receipt: ', coffeeTxn.hash);
 
 				// Clear the form fields.
 				setName('');
@@ -141,11 +140,21 @@ export default function Home() {
 					contractABI,
 					signer
 				);
-
-				console.log('fetching memos from the blockchain..');
-				const memos = await buyMeACoffee.getMemos();
-				console.log('fetched!');
-				setMemos(memos);
+				console.log(`Fetching memos...`)
+				// getMemos function works fine in solidity code, understanding the structs.
+				// But calling getMemos externally through react, it doesn't see the data as an array of structs
+				// Instead it sees it as an array of arrays, since each struct has multiple 'indexes'.
+				// Therefore we need to parse each 'index' (specific struct type) from each array.
+				const rawMemos = await buyMeACoffee.getMemos();
+				const parsedMemos = rawMemos.map(memo => ({
+					address: memo[0],
+					timestamp: new Date(Number(memo[1]) * 1000), // Convert from UNIX timestamp
+					name: memo[2],
+					message: memo[3],
+					totalPrice: ethers.formatEther(memo[4])
+				}));
+				console.log(`Memos successfully fetched!`)
+				setMemos(parsedMemos);
 			} else {
 				console.log('Metamask is not connected');
 			}
@@ -154,7 +163,7 @@ export default function Home() {
 		}
 	};
 
-	// Fetches current counter
+	// Fetches current counter for number of purchases made total
 	const getTotalPurchases = async () => {
 		// Notice signer not needed to instantiate contract, simply fetching data from on chain.
 		const provider = new ethers.BrowserProvider(ethereum, 'any');
@@ -233,7 +242,7 @@ export default function Home() {
 								<input
 									id="name"
 									type="text"
-									placeholder="anon"
+									placeholder="Anonymous"
 									onChange={onNameChange}
 								/>
 							</div>
@@ -244,21 +253,17 @@ export default function Home() {
 
 								<textarea
 									rows={3}
-									placeholder="Enjoy your coffee!"
+									placeholder="None."
 									id="message"
 									onChange={onMessageChange}
 									required
 								/>
 							</div>
 							<div>
-								<button type="button" onClick={() => buyCoffee('0.001', tip)}>
-									Buy 1 Coffee for 0.001 ETH
-								</button>
+								<button type="button" onClick={() => buyCoffee('0.001', tip)}>Buy 1 Coffee for 0.001 ETH</button>
 							</div>
 							<div>
-								<button type="button" onClick={() => buyCoffee('0.003', tip)}>
-									Buy 1 Large Coffee for 0.003 ETH
-								</button>
+								<button type="button" onClick={() => buyCoffee('0.003', tip)}>Buy 1 Large Coffee for 0.003 ETH</button>
 							</div>
 							<div>
 								<label>Buy with Custom Amount (ETH)</label>
@@ -305,9 +310,9 @@ export default function Home() {
 								margin: '5px'
 							}}
 						>
-							<p style={{ fontWeight: 'bold' }}>"{memo.message}"</p>
-							<p>From: {memo.name} at {memo.timestamp.toString()}</p>
-							<p>Amount: {memo.totalPrice} ETH</p>
+							<p>{memo.name} purchased an item on {memo.timestamp.toString()}</p>
+							<p>Value: {memo.totalPrice} ETH</p>
+							<p style={{ fontWeight: 'bold' }}>"Special Message: {memo.message}"</p>
 						</div>
 					);
 				})}
