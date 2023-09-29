@@ -7,7 +7,7 @@ import styles from '../styles/Home.module.css';
 
 export default function Home() {
 	// Contract Address & ABI
-	const contractAddress = '0xE155a0A255Bcbf5f1Dd0939513de289679d2955c';
+	const contractAddress = '0x5e3a6814E26819048EbdaBcAE4654791373456a0';
 	const contractABI = abi.abi;
 
 	// Component state. (Allows for storing of values that may change and cause re-rendering)
@@ -28,6 +28,7 @@ export default function Home() {
 	const onMessageChange = event => {setMessage(event.target.value)};
 	const onCustomAmountChange = event => {setCustomAmount(event.target.value)};
 	const onTipChange = event => {setTip(event.target.value)};
+
 	// `ethereum` is a global API injected into the browser by MetaMask (or other Ethereum wallets/extensions).
 	// This API serves as the bridge, allowing the dApp to interact with the Ethereum blockchain and the user's wallet.
 	// `window` is a global object in the browser environment, representing the browser window. 
@@ -102,14 +103,16 @@ export default function Home() {
 				);
 
 				// Calls `buyCoffee` function from smart contract
-				// Passes in name, message, and the total purchase amount
+				// Passes in name, message, total price
+				// value is the actual override indicating amount of eth to be sent with transaction.
 				console.log('buying coffee..');
 				const coffeeTxn = await buyMeACoffee.buyCoffee(
 					name ? name : 'anon',
 					message ? message : 'Enjoy your coffee!',
+					totalPriceInWei,
 					{ value: totalPriceInWei.toString() }
 				);
-				
+
 				// wait for tx to be mined, update counter and log hash.
 				await coffeeTxn.wait();
 				getTotalPurchases();
@@ -160,30 +163,31 @@ export default function Home() {
 		// For public state variables, so you can simply call them and fetch the data!
 		const totalPurchases = await buyMeACoffee.totalPurchases();
 		setPurchaseCounter(totalPurchases.toString());
-	}	  
+	};	  
 
 	// performs side effects (data fetching, DOM manips, set up event listeners, other task)
 	// Takes in two arguments, the code to run and optional dependency array.
 	// provides a designated place to setup tasks without interfering with the rendering process.
 	useEffect(() => {
 
-		// Instantiate contract and call functions to check connection and get current memos.
+		// Call functions to check and grab current status.
 		let buyMeACoffee;
 		isWalletConnected();
 		getMemos();
 		getTotalPurchases();
 
 		// Create an event handler function for when someone sends us a new memo.
-		const onNewMemo = (from, timestamp, name, message) => {
-			console.log('Memo received: ', from, timestamp, name, message);
+		const onNewMemo = (from, timestamp, name, message, totalPriceInWei) => {
+			console.log('Memo received: ', from, timestamp, name, message, totalPriceInWei);
 			// Updates memo state
 			setMemos(prevState => [
 				...prevState,
 				{
 					address: from,
-					timestamp: new Date(Number(timestamp)),
+					timestamp: new Date(Number(timestamp) * 1000),
 					message,
-					name
+					name,
+					totalPrice: ethers.formatEther(totalPriceInWei)
 				}
 			]);
 		};
@@ -289,7 +293,6 @@ export default function Home() {
 			</main>
 
 			{currentAccount && <h1>Messages from Customers</h1>}
-
 			{currentAccount &&
 				memos.map((memo, idx) => {
 					return (
@@ -303,16 +306,15 @@ export default function Home() {
 							}}
 						>
 							<p style={{ fontWeight: 'bold' }}>"{memo.message}"</p>
-							<p>
-								From: {memo.name} at {memo.timestamp.toString()}
-							</p>
+							<p>From: {memo.name} at {memo.timestamp.toString()}</p>
+							<p>Amount: {memo.totalPrice} ETH</p>
 						</div>
 					);
 				})}
 
 			<footer className={styles.footer}>
 			<p>Created by<a href="https://github.com/alexbabits" target="_blank" rel="noopener noreferrer">xyz</a></p>
-			<p>Inspired by<a href="https://github.com/abc" target="_blank" rel="noopener noreferrer">abc</a></p>
+			<p>Inspired by<a href="https://docs.alchemy.com/docs/how-to-build-buy-me-a-coffee-defi-dapp" target="_blank" rel="noopener noreferrer">abc</a></p>
 			</footer>
 		</div>
 	);
