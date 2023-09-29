@@ -273,10 +273,12 @@ export default function Home() {
 							<div>
 								<button type="button" onClick={() => buyProduct('0.001', tip, 'Small Coffee')}>Buy 1 Small Coffee for 0.001 ETH</button>
 							</div>
+							<Image src="/smallcoffee.png" alt="Small Coffee Image" width={50} height={50} />
 							<br />
 							<div>
 								<button type="button" onClick={() => buyProduct('0.003', tip, 'Large Coffee')}>Buy 1 Large Coffee for 0.003 ETH</button>
 							</div>
+							<Image src="/largecoffee.png" alt="Large Coffee Image" width={50} height={75} />
 							<br />
 							<div>
 								<label>Buy Donut for any amount of ETH</label>
@@ -289,6 +291,7 @@ export default function Home() {
 									onChange= {onCustomAmountChange}
 								/>
 								<div><button type="button" onClick={() => buyProduct(customAmount, tip, 'Donut')}>Buy Donut</button></div>
+								<Image src="/donut.png" alt="Coffee Image" width={50} height={50} />
 							</div>
 							<br />
 							<div>
@@ -302,13 +305,14 @@ export default function Home() {
 									onChange= {onTipChange}
 								/>
 							</div>
+							<Image src="/tipjar.png" alt="Large Coffee Image" width={50} height={75} />
 							<br /><br />
 							<div><button onClick={disconnectWallet}> Logout </button></div>
 							<br /><br />
 							<div>Total Purchases: {purchaseCounter}</div>
 							<br /><br />
 						</form>
-						{isLoading && <div>Attempting to validate purchase on chain...</div>}
+						{isLoading && <div>Waiting for purchase to be validated on chain...</div>}
 						<br />
 						{isLoading && <RingLoader color="green" size={100} speedMultiplier={0.5} />}
 					</div>

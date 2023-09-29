@@ -31,11 +31,11 @@
 - Fixed index.jsx (using await for the signer, and some other v6 ethers syntax updates)
 
 ## Goals
-2. Make it better with more features and customize. 
+- Better Styling
+- purchase items with any ERC-20. (requires grabbing a general ERC-20 ABI to interact with. Start with LINK or USDC)
+- Link paying customers into a database backend.
 
-    - purchase items with any ERC-20. (requires grabbing a general ERC-20 ABI to interact with. Start with LINK or USDC)
-    - Link paying customers into a database backend.
-
+## To Do
 3. Make frontend next.js/react files more simple with `create-react-app` or something similar. (optional)
 4. Deploy on vercel
 
