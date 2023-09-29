@@ -18,12 +18,14 @@ export default function Home() {
 	const [message, setMessage] = useState('');
 	const [memos, setMemos] = useState([]);
 	const [customAmount, setCustomAmount] = useState("0.001");
+	const [tip, setTip] = useState("0.001");
 
 	// event handler functions for 'onChange' events. Updates the name/message/customAmount variables state.
 	// Ensures that the displayed value and state value are always in sync.
 	const onNameChange = event => {setName(event.target.value)};
 	const onMessageChange = event => {setMessage(event.target.value)};
 	const onCustomAmountChange = event => {setCustomAmount(event.target.value)};
+	const onTipChange = event => {setTip(event.target.value)};
 
 	// `ethereum` is a global API injected into the browser by MetaMask (or other Ethereum wallets/extensions).
 	// This API serves as the bridge, allowing the dApp to interact with the Ethereum blockchain and the user's wallet.
@@ -78,8 +80,14 @@ export default function Home() {
 	
 
 	// Function calls `buyCoffee` from our smart contract.
-	const buyCoffee = async (ethValue) => {
+	const buyCoffee = async (price, tip) => {
 		try {
+			
+			// Calculating total amount owed
+			const priceInWei = BigInt(ethers.parseEther(price));
+			const tipInWei = BigInt(ethers.parseEther(tip));
+			const totalPriceInWei = priceInWei + tipInWei;
+
 			const { ethereum } = window;
 
 			if (ethereum) {
@@ -93,12 +101,12 @@ export default function Home() {
 				);
 
 				// Calls `buyCoffee` function from smart contract
-				// Passes in name, message, and the tip amount
+				// Passes in name, message, and the total purchase amount
 				console.log('buying coffee..');
 				const coffeeTxn = await buyMeACoffee.buyCoffee(
 					name ? name : 'anon',
 					message ? message : 'Enjoy your coffee!',
-					{ value: ethers.parseEther(ethValue) }
+					{ value: totalPriceInWei.toString() }
 				);
 
 				await coffeeTxn.wait();
@@ -225,12 +233,12 @@ export default function Home() {
 								/>
 							</div>
 							<div>
-								<button type="button" onClick={() => buyCoffee('0.001')}>
+								<button type="button" onClick={() => buyCoffee('0.001', tip)}>
 									Buy 1 Coffee for 0.001 ETH
 								</button>
 							</div>
 							<div>
-								<button type="button" onClick={() => buyCoffee('0.003')}>
+								<button type="button" onClick={() => buyCoffee('0.003', tip)}>
 									Buy 1 Large Coffee for 0.003 ETH
 								</button>
 							</div>
@@ -244,7 +252,18 @@ export default function Home() {
 									value={customAmount}
 									onChange= {onCustomAmountChange}
 								/>
-								<div><button type="button" onClick={() => buyCoffee(customAmount)}>Buy with Custom Amount</button></div>
+								<div><button type="button" onClick={() => buyCoffee(customAmount, tip)}>Buy with Custom Amount</button></div>
+							</div>
+							<div>
+								<label>Include tip? (ETH)</label>
+								<br />
+								<input 
+									type="number"
+									step="0.001"
+									min="0.0"
+									value={tip}
+									onChange= {onTipChange}
+								/>
 							</div>
 							<div><button onClick={disconnectWallet}> Logout </button></div>
 						</form>
