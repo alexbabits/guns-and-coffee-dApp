@@ -2,8 +2,9 @@ import abi from "../artifacts/contracts/PaymentHandler.sol/PaymentHandler.json";
 import { ethers } from 'ethers';
 import Head from 'next/head';
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState} from 'react';
 import styles from '../styles/Home.module.css';
+import { RingLoader } from "react-spinners";
 
 export default function Home() {
 	// Contract Address & ABI
@@ -20,6 +21,7 @@ export default function Home() {
 	const [customAmount, setCustomAmount] = useState("0.001");
 	const [tip, setTip] = useState("0.001");
 	const [purchaseCounter, setPurchaseCounter] = useState(0); 
+	const [isLoading, setIsLoading] = useState(false);
 
 
 	// event handler functions for 'onChange' events. Updates the name/message/customAmount variables state.
@@ -105,7 +107,9 @@ export default function Home() {
 				// Calls `buyProduct` function from smart contract
 				// Passes in name, message, total price, product name and override value.
 				// `value` is the actual override indicating amount of eth to be sent with transaction.
+				setIsLoading(true);
 				console.log('Processing item purchase, please wait...');
+
 				const Txn = await paymentHandler.buyProduct(
 					name ? name : 'Anonymous',
 					message ? message : 'None.',
@@ -113,9 +117,10 @@ export default function Home() {
 					productName,
 					{ value: totalPriceInWei.toString() }
 				);
-
-				// wait for tx to be mined, get and update counter and log hash.
+				
+				// wait for tx to be mined, get and update counter, log hash, set loading to false for spinner display.
 				await Txn.wait();
+				setIsLoading(false);
 				getTotalPurchases();
 				console.log('Item successfully purchased! On chain tx hash receipt: ', Txn.hash);
 
@@ -124,6 +129,7 @@ export default function Home() {
 				setMessage('');
 			}
 		} catch (error) {
+			setIsLoading(false);
 			console.log(error);
 		}
 	};
@@ -233,12 +239,13 @@ export default function Home() {
 			</Head>
 
 			<main className={styles.main}>
-				<h1 className={styles.title}>Buy Our Products!</h1>
+				<h1 className={styles.title}>We Sell Products!</h1>
 
 				{currentAccount ? (
 					<div>
 						<form>
 							<div>
+								<br />
 								<label>Name</label>
 								<br />
 
@@ -262,12 +269,15 @@ export default function Home() {
 									required
 								/>
 							</div>
+							<br />
 							<div>
 								<button type="button" onClick={() => buyProduct('0.001', tip, 'Small Coffee')}>Buy 1 Small Coffee for 0.001 ETH</button>
 							</div>
+							<br />
 							<div>
 								<button type="button" onClick={() => buyProduct('0.003', tip, 'Large Coffee')}>Buy 1 Large Coffee for 0.003 ETH</button>
 							</div>
+							<br />
 							<div>
 								<label>Buy Donut for any amount of ETH</label>
 								<br />
@@ -280,6 +290,7 @@ export default function Home() {
 								/>
 								<div><button type="button" onClick={() => buyProduct(customAmount, tip, 'Donut')}>Buy Donut</button></div>
 							</div>
+							<br />
 							<div>
 								<label>Include tip? (ETH)</label>
 								<br />
@@ -291,9 +302,15 @@ export default function Home() {
 									onChange= {onTipChange}
 								/>
 							</div>
+							<br /><br />
 							<div><button onClick={disconnectWallet}> Logout </button></div>
+							<br /><br />
 							<div>Total Purchases: {purchaseCounter}</div>
+							<br /><br />
 						</form>
+						{isLoading && <div>Attempting to validate purchase on chain...</div>}
+						<br />
+						{isLoading && <RingLoader color="green" size={100} speedMultiplier={0.5} />}
 					</div>
 				) : (
 					<div><button onClick={connectWallet}> Connect your wallet </button></div>
@@ -316,8 +333,8 @@ export default function Home() {
 				})}
 
 			<footer className={styles.footer}>
-			<p>Created by<a href="https://github.com/alexbabits" target="_blank" rel="noopener noreferrer">xyz</a></p>
-			<p>Inspired by<a href="https://docs.alchemy.com/docs/how-to-build-buy-me-a-coffee-defi-dapp" target="_blank" rel="noopener noreferrer">abc</a></p>
+				<p><a href="https://github.com/alexbabits" color="#c8ff00" target="_blank" rel="noopener noreferrer">Created by Alex Babits</a></p>
+				<p><a href="https://docs.alchemy.com/docs/how-to-build-buy-me-a-coffee-defi-dapp" color="#c8ff00" target="_blank" rel="noopener noreferrer">Inspired by @thatguyintech</a></p>
 			</footer>
 		</div>
 	);

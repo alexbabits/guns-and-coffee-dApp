@@ -33,14 +33,11 @@
 ## Goals
 2. Make it better with more features and customize. 
 
-    - Feature: Loading text or image after coffee is purchased but before its mined. 'processing order'.
-    - Improve Styling: tailwind for css, way better styling.
-
-    - tip with any ERC-20. (requires grabbing a general ERC-20 ABI to interact with. Start with LINK or USDC)
+    - purchase items with any ERC-20. (requires grabbing a general ERC-20 ABI to interact with. Start with LINK or USDC)
     - Link paying customers into a database backend.
 
 3. Make frontend next.js/react files more simple with `create-react-app` or something similar. (optional)
-4. Deploy on vercel rather than just local host (optional)
+4. Deploy on vercel
 
 ## References:
 - https://docs.alchemy.com/docs/how-to-build-buy-me-a-coffee-defi-dapp
