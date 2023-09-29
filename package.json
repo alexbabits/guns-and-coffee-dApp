@@ -7,8 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "next start"
   },
   "dependencies": {
     "ethers": "^6.7.1",
@@ -22,8 +21,6 @@
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^3.0.0",
     "dotenv": "^16.3.1",
-    "eslint": "7",
-    "eslint-config-next": "12.0.1",
     "hardhat": "^2.17.3"
   }
 }

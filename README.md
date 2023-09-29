@@ -19,21 +19,29 @@ NOTE: When you deploy your contract, it will have it's own address. Populate you
 - `npx hardhat run scripts/withdraw.js` can be used once contract is deployed and it some ether from tips someone or yourself send it, you can execute this script to withdraw funds to owner (you). 
 - `npm run dev` to run server and see on `http://localhost:3000`
 
-## Important
-- Uses ethers 6.7.1 for the frontend with next.js, and 6.4.0 with hardhat-toolbox.
+
+## Scripts
 - `deploy-coffee.js` does work to deploy to local hardhat instance
 - `all-coffee-functions.js` does work within that instance as well to deploy and do all the functions.
-- `withdraw.js` works on sepolia as well.
+- `withdraw.js` works successfully with sepolia.
+
+
+## Important:
+- Uses ethers 6.7.1 for the frontend with next.js, and 6.4.0 with hardhat-toolbox.
 - Fixed index.jsx (using await for the signer, and some other v6 ethers syntax updates)
 
 ## Goals
-- Figure out exactly how all the code works.
-- Think about how to change functionality into something you want. 
-- See if you can make this next app with `create-react-app` instead, trimming off more fat.
-- Ask GPT for file-trimming and explanation questions.
-    - Do I need eslint?
-    - Do I need _app.jsx?
-- Deploy on vercel rather than just local host.
+2. Make it better with more features and customize. 
+    - Another button buy for 0.003 ETH.
+    - disconnect wallet button
+    - Loading text or image after coffee is purchased. 'processing order'.
+    - counters/coffe cup images for number of customers/total tips.
+    - tip with any ERC-20 (or USDC/LINK).
+    - Change Coffee Theme.
+    - tailwind for css, way better styling.
+    
+3. Make frontend code and files more simple with `create-react-app` or something similar. Trim all fat. (optional)
+4. Deploy on vercel rather than just local host (optional)
 
 ## References:
 - https://www.youtube.com/watch?v=cxxKdJk55Lk
