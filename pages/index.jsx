@@ -17,16 +17,13 @@ export default function Home() {
 	const [name, setName] = useState('');
 	const [message, setMessage] = useState('');
 	const [memos, setMemos] = useState([]);
+	const [customAmount, setCustomAmount] = useState("0.001");
 
-	// event handler functions for 'onChange' events. Updates the name and message variables state.
+	// event handler functions for 'onChange' events. Updates the name/message/customAmount variables state.
 	// Ensures that the displayed value and state value are always in sync.
-	const onNameChange = event => {
-		setName(event.target.value);
-	};
-
-	const onMessageChange = event => {
-		setMessage(event.target.value);
-	};
+	const onNameChange = event => {setName(event.target.value)};
+	const onMessageChange = event => {setMessage(event.target.value)};
+	const onCustomAmountChange = event => {setCustomAmount(event.target.value)};
 
 	// `ethereum` is a global API injected into the browser by MetaMask (or other Ethereum wallets/extensions).
 	// This API serves as the bridge, allowing the dApp to interact with the Ethereum blockchain and the user's wallet.
@@ -68,8 +65,20 @@ export default function Home() {
 		}
 	};
 
+	// Sets Current Account to null. (forgest users address)
+	const disconnectWallet = () => {
+		try {
+			// Wallet is not technically disconnected, the address is just no longer stored in the dApp
+			setCurrentAccount(null);
+			console.log('Forgetting address:', currentAccount);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+	
+
 	// Function calls `buyCoffee` from our smart contract.
-	const buyCoffee = async () => {
+	const buyCoffee = async (ethValue) => {
 		try {
 			const { ethereum } = window;
 
@@ -89,7 +98,7 @@ export default function Home() {
 				const coffeeTxn = await buyMeACoffee.buyCoffee(
 					name ? name : 'anon',
 					message ? message : 'Enjoy your coffee!',
-					{ value: ethers.parseEther('0.001') }
+					{ value: ethers.parseEther(ethValue) }
 				);
 
 				await coffeeTxn.wait();
@@ -216,14 +225,32 @@ export default function Home() {
 								/>
 							</div>
 							<div>
-								<button type="button" onClick={buyCoffee}>
-									Send 1 Coffee for 0.001ETH
+								<button type="button" onClick={() => buyCoffee('0.001')}>
+									Buy 1 Coffee for 0.001 ETH
 								</button>
 							</div>
+							<div>
+								<button type="button" onClick={() => buyCoffee('0.003')}>
+									Buy 1 Large Coffee for 0.003 ETH
+								</button>
+							</div>
+							<div>
+								<label>Buy with Custom Amount (ETH)</label>
+								<br />
+								<input 
+									type="number"
+									step="0.001"
+									min="0.001"
+									value={customAmount}
+									onChange= {onCustomAmountChange}
+								/>
+								<div><button type="button" onClick={() => buyCoffee(customAmount)}>Buy with Custom Amount</button></div>
+							</div>
+							<div><button onClick={disconnectWallet}> Logout </button></div>
 						</form>
 					</div>
 				) : (
-					<button onClick={connectWallet}> Connect your wallet </button>
+					<div><button onClick={connectWallet}> Connect your wallet </button></div>
 				)}
 			</main>
 
@@ -250,13 +277,8 @@ export default function Home() {
 				})}
 
 			<footer className={styles.footer}>
-				<a
-					href="https://alchemy.com/?a=roadtoweb3weektwo"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					Created by @thatguyintech for Alchemy's Road to Web3 lesson two!
-				</a>
+			<p>Created by<a href="https://github.com/alexbabits" target="_blank" rel="noopener noreferrer">xyz</a></p>
+			<p>Inspired by<a href="https://github.com/abc" target="_blank" rel="noopener noreferrer">abc</a></p>
 			</footer>
 		</div>
 	);

@@ -32,14 +32,16 @@ NOTE: When you deploy your contract, it will have it's own address. Populate you
 
 ## Goals
 2. Make it better with more features and customize. 
-    - Another button buy for 0.003 ETH.
-    - disconnect wallet button
-    - Loading text or image after coffee is purchased. 'processing order'.
+    - include tip?
     - counters/coffe cup images for number of customers/total tips.
+    - Loading text or image after coffee is purchased. 'processing order'.
     - tip with any ERC-20 (or USDC/LINK).
     - Change Coffee Theme.
     - tailwind for css, way better styling.
-    
+    - date defaults to 1970 until browser refresh.
+    - Buy Coffee method in etherscan --> Buy Product
+    - Withdraw Tips method in etherscan --> Withdraw Funds
+
 3. Make frontend code and files more simple with `create-react-app` or something similar. Trim all fat. (optional)
 4. Deploy on vercel rather than just local host (optional)
 
