@@ -7,7 +7,7 @@ import styles from '../styles/Home.module.css';
 
 export default function Home() {
 	// Contract Address & ABI
-	const contractAddress = '0x705C4600329D125E146ce1c1f69c98bE83462a2B';
+	const contractAddress = '0xE155a0A255Bcbf5f1Dd0939513de289679d2955c';
 	const contractABI = abi.abi;
 
 	// Component state. (Allows for storing of values that may change and cause re-rendering)
@@ -19,6 +19,8 @@ export default function Home() {
 	const [memos, setMemos] = useState([]);
 	const [customAmount, setCustomAmount] = useState("0.001");
 	const [tip, setTip] = useState("0.001");
+	const [purchaseCounter, setPurchaseCounter] = useState(0); 
+
 
 	// event handler functions for 'onChange' events. Updates the name/message/customAmount variables state.
 	// Ensures that the displayed value and state value are always in sync.
@@ -26,7 +28,6 @@ export default function Home() {
 	const onMessageChange = event => {setMessage(event.target.value)};
 	const onCustomAmountChange = event => {setCustomAmount(event.target.value)};
 	const onTipChange = event => {setTip(event.target.value)};
-
 	// `ethereum` is a global API injected into the browser by MetaMask (or other Ethereum wallets/extensions).
 	// This API serves as the bridge, allowing the dApp to interact with the Ethereum blockchain and the user's wallet.
 	// `window` is a global object in the browser environment, representing the browser window. 
@@ -108,9 +109,10 @@ export default function Home() {
 					message ? message : 'Enjoy your coffee!',
 					{ value: totalPriceInWei.toString() }
 				);
-
+				
+				// wait for tx to be mined, update counter and log hash.
 				await coffeeTxn.wait();
-
+				getTotalPurchases();
 				console.log('mined ', coffeeTxn.hash);
 				console.log('coffee purchased!');
 
@@ -149,6 +151,17 @@ export default function Home() {
 		}
 	};
 
+	// Fetches current counter
+	const getTotalPurchases = async () => {
+		// Notice signer not needed to instantiate contract, simply fetching data from on chain.
+		const provider = new ethers.BrowserProvider(ethereum, 'any');
+		const buyMeACoffee = new ethers.Contract(contractAddress, contractABI, provider);
+		// Solidity auto-generates getter functions, which are same as the variable name
+		// For public state variables, so you can simply call them and fetch the data!
+		const totalPurchases = await buyMeACoffee.totalPurchases();
+		setPurchaseCounter(totalPurchases.toString());
+	}	  
+
 	// performs side effects (data fetching, DOM manips, set up event listeners, other task)
 	// Takes in two arguments, the code to run and optional dependency array.
 	// provides a designated place to setup tasks without interfering with the rendering process.
@@ -158,6 +171,7 @@ export default function Home() {
 		let buyMeACoffee;
 		isWalletConnected();
 		getMemos();
+		getTotalPurchases();
 
 		// Create an event handler function for when someone sends us a new memo.
 		const onNewMemo = (from, timestamp, name, message) => {
@@ -266,6 +280,7 @@ export default function Home() {
 								/>
 							</div>
 							<div><button onClick={disconnectWallet}> Logout </button></div>
+							<div>Total Purchases: {purchaseCounter}</div>
 						</form>
 					</div>
 				) : (

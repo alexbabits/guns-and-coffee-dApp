@@ -8,7 +8,7 @@ async function getSpecificBalance(provider, address) {
 
 async function main() {
   // Get the contract that has been deployed to Sepolia. Double check address.
-  const contractAddress="0x705C4600329D125E146ce1c1f69c98bE83462a2B";
+  const contractAddress="0xE155a0A255Bcbf5f1Dd0939513de289679d2955c";
   const contractABI = abi.abi;
 
   // Get the node connection and wallet connection.

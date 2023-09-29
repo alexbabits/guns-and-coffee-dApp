@@ -16,6 +16,8 @@ contract BuyMeACoffee {
     address payable owner;
     // Array to store all the memos received from coffee purchases.
     Memo[] memos;
+    // Counter for all purchases
+    uint256 public totalPurchases;
 
     // Event to emit when a Memo is created.
     event NewMemo(
@@ -55,6 +57,9 @@ contract BuyMeACoffee {
             _name,
             _message
         );
+
+        // Update counter
+        totalPurchases++;
     }
 
     // Allows owner to withdraw tips by calling withdraw.js script.

@@ -32,7 +32,7 @@ NOTE: When you deploy your contract, it will have it's own address. Populate you
 
 ## Goals
 2. Make it better with more features and customize. 
-    - counters/coffe cup images for number of customers/total tips. (Could get this info from blockchain, or probs counter from website)
+    - specify item and total price in memo
     - Loading text or image after coffee is purchased but before its mined. 'processing order'.
     - tip with any ERC-20 (or USDC/LINK).
     - date defaults to 1970 until browser refresh.
