@@ -7,7 +7,8 @@ import styles from '../styles/Home.module.css';
 
 export default function Home() {
 	// Contract Address & ABI
-	const contractAddress = '0x3AD8B84366A563dB8B6D46e01c0bda2e4e89563f';
+	// working: 0x3AD8B84366A563dB8B6D46e01c0bda2e4e89563f
+	const contractAddress = '0x07cDBe84a5e347a46e3Bb52e20123d5B0047cC16';
 	const contractABI = abi.abi;
 
 	// Component state. (Allows for storing of values that may change and cause re-rendering)
@@ -82,13 +83,14 @@ export default function Home() {
 	
 
 	// Function calls `buyCoffee` from our smart contract.
-	const buyCoffee = async (price, tip) => {
+	const buyCoffee = async (price, tip, productName) => {
 		try {
 			
 			// Calculating total amount owed
 			const priceInWei = BigInt(ethers.parseEther(price));
 			const tipInWei = BigInt(ethers.parseEther(tip));
 			const totalPriceInWei = priceInWei + tipInWei;
+			//const productName = 'Coffee'
 
 			const { ethereum } = window;
 
@@ -110,6 +112,7 @@ export default function Home() {
 					name ? name : 'Anonymous',
 					message ? message : 'None.',
 					totalPriceInWei,
+					productName,
 					{ value: totalPriceInWei.toString() }
 				);
 
@@ -151,7 +154,8 @@ export default function Home() {
 					timestamp: new Date(Number(memo[1]) * 1000), // Convert from UNIX timestamp
 					name: memo[2],
 					message: memo[3],
-					totalPrice: ethers.formatEther(memo[4])
+					totalPrice: ethers.formatEther(memo[4]),
+					productName: memo[5]
 				}));
 				console.log(`Memos successfully fetched!`)
 				setMemos(parsedMemos);
@@ -186,8 +190,8 @@ export default function Home() {
 		getTotalPurchases();
 
 		// Create an event handler function for when someone sends us a new memo.
-		const onNewMemo = (from, timestamp, name, message, totalPriceInWei) => {
-			console.log('Memo received: ', from, timestamp, name, message, totalPriceInWei);
+		const onNewMemo = (from, timestamp, name, message, totalPriceInWei, productName) => {
+			console.log('Memo received: ', from, timestamp, name, message, totalPriceInWei, productName);
 			// Updates memo state
 			setMemos(prevState => [
 				...prevState,
@@ -196,7 +200,8 @@ export default function Home() {
 					timestamp: new Date(Number(timestamp) * 1000),
 					message,
 					name,
-					totalPrice: ethers.formatEther(totalPriceInWei)
+					totalPrice: ethers.formatEther(totalPriceInWei),
+					productName
 				}
 			]);
 		};
@@ -224,13 +229,13 @@ export default function Home() {
 
 		<div className={styles.container}>
 			<Head>
-				<title>Buy Alex a Coffee!</title>
-				<meta name="description" content="Tipping site" />
+				<title>Products for Sale!</title>
+				<meta name="description" content="E-commerce Site" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
 			<main className={styles.main}>
-				<h1 className={styles.title}>Buy Alex a Coffee!</h1>
+				<h1 className={styles.title}>Buy Our Products!</h1>
 
 				{currentAccount ? (
 					<div>
@@ -248,7 +253,7 @@ export default function Home() {
 							</div>
 							<br />
 							<div>
-								<label>Send Alex a message</label>
+								<label>Send us a message!</label>
 								<br />
 
 								<textarea
@@ -260,10 +265,10 @@ export default function Home() {
 								/>
 							</div>
 							<div>
-								<button type="button" onClick={() => buyCoffee('0.001', tip)}>Buy 1 Coffee for 0.001 ETH</button>
+								<button type="button" onClick={() => buyCoffee('0.001', tip, 'Small Coffee')}>Buy 1 Coffee for 0.001 ETH</button>
 							</div>
 							<div>
-								<button type="button" onClick={() => buyCoffee('0.003', tip)}>Buy 1 Large Coffee for 0.003 ETH</button>
+								<button type="button" onClick={() => buyCoffee('0.003', tip, 'Large Coffee')}>Buy 1 Large Coffee for 0.003 ETH</button>
 							</div>
 							<div>
 								<label>Buy with Custom Amount (ETH)</label>
@@ -275,7 +280,7 @@ export default function Home() {
 									value={customAmount}
 									onChange= {onCustomAmountChange}
 								/>
-								<div><button type="button" onClick={() => buyCoffee(customAmount, tip)}>Buy with Custom Amount</button></div>
+								<div><button type="button" onClick={() => buyCoffee(customAmount, tip, 'Donut')}>Buy with Custom Amount</button></div>
 							</div>
 							<div>
 								<label>Include tip? (ETH)</label>
@@ -297,7 +302,7 @@ export default function Home() {
 				)}
 			</main>
 
-			{currentAccount && <h1>Messages from Customers</h1>}
+			{currentAccount && <h1>Customer Receipts</h1>}
 			{currentAccount &&
 				memos.map((memo, i) => {
 					return (
@@ -305,9 +310,9 @@ export default function Home() {
 						key={i}
 						style={{border: '2px solid', borderRadius: '5px', padding: '5px', margin: '5px'}}
 						>
-							<p style={{ fontWeight: 'bold' }}>{memo.name} purchased an item on {memo.timestamp.toString()}</p>
-							<p>Value: {memo.totalPrice} ETH</p>
-							<p>Special Message: {memo.message}</p>
+							<p style={{ fontWeight: 'bold' }}>{memo.name} purchased {memo.productName} for {memo.totalPrice} ETH</p>
+							<p>Customer's Message: {memo.message}</p>
+							<p>{memo.timestamp.toString()}</p>
 						</div>
 					);
 				})}

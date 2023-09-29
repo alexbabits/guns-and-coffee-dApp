@@ -22,7 +22,10 @@ async function printMemos(memos) {
     const customer = memo.name;
     const customerAddress = memo.from;
     const message = memo.message;
-    console.log(`At ${timestamp}, ${customer} (${customerAddress}) said: "${message}"`);
+    const totalPrice = memo.totalPriceInWei
+    const productName = memo.productName
+    console.log(`At ${timestamp}, ${customer} (${customerAddress}) said:`);
+    console.log(`"${message}." Price was ${totalPrice}. Product name was ${productName}`)
   }
 }
 
@@ -46,12 +49,13 @@ async function main() {
   // totalPriceInWei is the simulated frontend price that the user will choose.
   const totalPriceInWeiValue = {value: hre.ethers.parseEther("1")};
   const totalPriceInWei = hre.ethers.parseEther("1");
-  await buyMeACoffee.connect(customer).buyCoffee("Carolina", "You're the best!", totalPriceInWei, totalPriceInWeiValue);
-  await buyMeACoffee.connect(customer2).buyCoffee("Vitto", "Amazing teacher", totalPriceInWei, totalPriceInWeiValue);
-  await buyMeACoffee.connect(customer3).buyCoffee("Kay", "I love my Proof of Knowledge", totalPriceInWei, totalPriceInWeiValue);
+  const productName = 'Coffee'
+  await buyMeACoffee.connect(customer).buyCoffee("Carolina", "You're the best!", totalPriceInWei, productName, totalPriceInWeiValue);
+  await buyMeACoffee.connect(customer2).buyCoffee("Vitto", "Amazing teacher", totalPriceInWei, productName, totalPriceInWeiValue);
+  await buyMeACoffee.connect(customer3).buyCoffee("Kay", "I love my Proof of Knowledge", totalPriceInWei, productName, totalPriceInWeiValue);
 
   // Check balances after the coffee purchases.
-  console.log("== bought coffee ==");
+  console.log(`== bought ${productName} ==`);
   await printBalances(addresses);
 
   // Withdraw funds to the owner (address 0).

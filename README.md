@@ -10,7 +10,7 @@
 2. Owner can withdraw funds from the contract.
 3. Wrote scripts to make sure all the functionality worked.
 4. Integrated smart contract into front end. Also allows for metamask integration
-NOTE: When you deploy your contract, it will have it's own address. Populate your address in the `withdraw.js` file, as well as the index.jsx.
+***NOTE: When you deploy your contract, it will have it's own address. Populate it's address in the `withdraw.js` and `index.jsx` files.***
 
 ## Commands
 - `npx hardhat run scripts/deploy-coffee.js` if you only want to deploy the contract to local hardhat instance and nothing else.
@@ -32,12 +32,14 @@ NOTE: When you deploy your contract, it will have it's own address. Populate you
 
 ## Goals
 2. Make it better with more features and customize. 
-    - specify item in memo
-    - tip with any ERC-20 (or USDC/LINK).
-    
+    - tx hash 
+
     - Loading text or image after coffee is purchased but before its mined. 'processing order'.
     - tailwind for css, way better styling.
-    - Change Coffee Theme.
+    - Change Coffee Theme. (And function names like buyCoffee)
+
+    - tip with any ERC-20 (or USDC/LINK). (requires grabbing a general ERC-20 ABI to interact with)
+    - Link customers into a database backend.
 
 
 3. Make frontend code and files more simple with `create-react-app` or something similar. Trim all fat. (optional)

@@ -11,6 +11,7 @@ contract BuyMeACoffee {
         string name;
         string message;
         uint256 totalPriceInWei;
+        string productName;
     }
 
     // Array to store all the memos received from coffee purchases.
@@ -26,7 +27,8 @@ contract BuyMeACoffee {
         uint256 timestamp,
         string name,
         string message,
-        uint256 totalPriceInWei
+        uint256 totalPriceInWei,
+        string productName
     );
 
     constructor() {
@@ -40,7 +42,8 @@ contract BuyMeACoffee {
     }
 
     // Allows anyone to buy coffee, specifying their name and message on the frontend.
-    function buyCoffee(string memory _name, string memory _message, uint256 _totalPriceInWei) public payable {
+    function buyCoffee(string memory _name, string memory _message, uint256 _totalPriceInWei, string memory _productName) public payable {
+
         // Must accept more than 0 ETH for a coffee, value on frontend must match.
         require(msg.value > 0, "can't buy coffee for free!");
         require(msg.value == _totalPriceInWei, "Passed totalPriceInWei does not match transaction value!");
@@ -51,7 +54,8 @@ contract BuyMeACoffee {
             block.timestamp,
             _name,
             _message,
-            _totalPriceInWei
+            _totalPriceInWei,
+            _productName
         ));
 
         // Emit a NewMemo event with details about the memo.
@@ -60,7 +64,8 @@ contract BuyMeACoffee {
             block.timestamp,
             _name,
             _message,
-            _totalPriceInWei
+            _totalPriceInWei,
+            _productName
         );
 
         // Update counter
