@@ -1,11 +1,12 @@
 .container {
   min-height: 100vh;
-  color: #c08864;
+  color: #eda041d0;
   padding: 0 0.5rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  z-index: 1;
 }
 
 .main {
@@ -16,16 +17,32 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  z-index: 1;
+}
+
+.underlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/background.jpg');
+  opacity: 0.08;
+  background-repeat: no-repeat;
+  background-size: cover; /* This will cover the entire viewport */
+  z-index: 0; /* Ensure the underlay stays below content */
+  background-attachment: fixed;
 }
 
 .footer {
   width: 100%;
   height: 100px;
-  border-top: 1px solid #c8ff00;
+  border-top: 1px solid #edc841;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  z-index: 1;
 }
 
 .footer a {

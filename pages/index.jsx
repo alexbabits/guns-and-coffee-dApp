@@ -230,7 +230,8 @@ export default function Home() {
 	}, []);
 
 	return (
-
+		<>
+		<div className={styles.underlay}></div>
 		<div className={styles.container}>
 			<Head>
 				<title>Products for Sale!</title>
@@ -337,9 +338,10 @@ export default function Home() {
 				})}
 
 			<footer className={styles.footer}>
-				<p><a href="https://github.com/alexbabits" color="#c8ff00" target="_blank" rel="noopener noreferrer">Created by Alex Babits</a></p>
-				<p><a href="https://docs.alchemy.com/docs/how-to-build-buy-me-a-coffee-defi-dapp" color="#c8ff00" target="_blank" rel="noopener noreferrer">Inspired by @thatguyintech</a></p>
+				<p><a href="https://github.com/alexbabits" color="#edc841" target="_blank" rel="noopener noreferrer">Created by Alex Babits</a></p>
+				<p><a href="https://docs.alchemy.com/docs/how-to-build-buy-me-a-coffee-defi-dapp" color="#edc841" target="_blank" rel="noopener noreferrer">Inspired by @thatguyintech</a></p>
 			</footer>
 		</div>
+		</>
 	);
 }

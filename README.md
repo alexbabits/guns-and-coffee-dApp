@@ -37,6 +37,7 @@
 
 ## To Do
 3. Make frontend next.js/react files more simple with `create-react-app` or something similar. (optional)
+Do (npx create-next-app new-project-name) in a new project, then bring that shit over, and see if it works.
 4. Deploy on vercel
 
 ## References:
