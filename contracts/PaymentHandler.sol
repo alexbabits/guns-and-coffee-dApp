@@ -2,7 +2,7 @@
 pragma solidity ^0.8.19;
 
 import "hardhat/console.sol";
-contract BuyMeACoffee {
+contract PaymentHandler {
     
     // Struct defining the shape of a memo.
     struct Memo {
@@ -14,7 +14,7 @@ contract BuyMeACoffee {
         string productName;
     }
 
-    // Array to store all the memos received from coffee purchases.
+    // Array to store all the memos received from product purchases.
     Memo[] memos;
     // Counter for all purchases
     uint256 public totalPurchases;
@@ -41,12 +41,12 @@ contract BuyMeACoffee {
         return memos;
     }
 
-    // Allows anyone to buy coffee, specifying their name and message on the frontend.
-    function buyCoffee(string memory _name, string memory _message, uint256 _totalPriceInWei, string memory _productName) public payable {
+    // Allows anyone to buy a product, specifying name, message, price, and product name.
+    function buyProduct(string memory _name, string memory _message, uint256 _totalPriceInWei, string memory _productName) public payable {
 
-        // Must accept more than 0 ETH for a coffee, value on frontend must match.
-        require(msg.value > 0, "can't buy coffee for free!");
-        require(msg.value == _totalPriceInWei, "Passed totalPriceInWei does not match transaction value!");
+        // Must accept more than 0 ETH for a product, value on frontend must match.
+        require(msg.value > 0, "can't buy products for free!");
+        require(msg.value == _totalPriceInWei, "totalPriceInWei does not match transaction value!");
 
         // Add the memo to memos array.
         memos.push(Memo(

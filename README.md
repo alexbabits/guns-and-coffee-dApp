@@ -13,16 +13,16 @@
 ***NOTE: When you deploy your contract, it will have it's own address. Populate it's address in the `withdraw.js` and `index.jsx` files.***
 
 ## Commands
-- `npx hardhat run scripts/deploy-coffee.js` if you only want to deploy the contract to local hardhat instance and nothing else.
-- `npx hardhat run scripts/buy-coffee.js` can be used to deploy and then test all the functionality on the local hardhat instance. 
-- `npx hardhat run scripts/deploy-coffee.js --network sepolia` used to deploy onto Sepolia.
+- `npx hardhat run scripts/deploy.js` if you only want to deploy the contract to local hardhat instance and nothing else.
+- `npx hardhat run scripts/all-functions.js` can be used to deploy and then test all the functionality on the local hardhat instance. 
+- `npx hardhat run scripts/deploy.js --network sepolia` used to deploy onto Sepolia.
 - `npx hardhat run scripts/withdraw.js` can be used once contract is deployed and it some ether from tips someone or yourself send it, you can execute this script to withdraw funds to owner (you). 
 - `npm run dev` to run server and see on `http://localhost:3000`
 
 
 ## Scripts
-- `deploy-coffee.js` does work to deploy to local hardhat instance
-- `all-coffee-functions.js` does work within that instance as well to deploy and do all the functions.
+- `deploy.js` does work to deploy to local hardhat instance
+- `all-functions.js` does work within that instance as well to deploy and do all the functions.
 - `withdraw.js` works successfully with sepolia.
 
 
@@ -32,23 +32,21 @@
 
 ## Goals
 2. Make it better with more features and customize. 
-    - tx hash 
 
-    - Loading text or image after coffee is purchased but before its mined. 'processing order'.
-    - tailwind for css, way better styling.
-    - Change Coffee Theme. (And function names like buyCoffee)
+    - Feature: Loading text or image after coffee is purchased but before its mined. 'processing order'.
+    - Improve Styling: tailwind for css, way better styling.
 
-    - tip with any ERC-20 (or USDC/LINK). (requires grabbing a general ERC-20 ABI to interact with)
-    - Link customers into a database backend.
+    - tip with any ERC-20. (requires grabbing a general ERC-20 ABI to interact with. Start with LINK or USDC)
+    - Link paying customers into a database backend.
 
-
-3. Make frontend code and files more simple with `create-react-app` or something similar. Trim all fat. (optional)
+3. Make frontend next.js/react files more simple with `create-react-app` or something similar. (optional)
 4. Deploy on vercel rather than just local host (optional)
 
 ## References:
-- https://www.youtube.com/watch?v=cxxKdJk55Lk
 - https://docs.alchemy.com/docs/how-to-build-buy-me-a-coffee-defi-dapp
-- https://sepolia.etherscan.io/address/0x00885e2b1Bbc06555d65303a6cBe9509B4DA16C9
+- https://sepolia.etherscan.io
 - https://docs.ethers.org/v6/
+- https://docs.metamask.io/
+- https://hardhat.org/docs
 
 ![ok](public/1.png)

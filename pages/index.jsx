@@ -1,4 +1,4 @@
-import abi from "../artifacts/contracts/BuyMeACoffee.sol/BuyMeACoffee.json";
+import abi from "../artifacts/contracts/PaymentHandler.sol/PaymentHandler.json";
 import { ethers } from 'ethers';
 import Head from 'next/head';
 import Image from 'next/image';
@@ -7,8 +7,7 @@ import styles from '../styles/Home.module.css';
 
 export default function Home() {
 	// Contract Address & ABI
-	// working: 0x3AD8B84366A563dB8B6D46e01c0bda2e4e89563f
-	const contractAddress = '0x07cDBe84a5e347a46e3Bb52e20123d5B0047cC16';
+	const contractAddress = '0x9a5c4290C3c768a41afac7306D05Fe4B32E7D93a';
 	const contractABI = abi.abi;
 
 	// Component state. (Allows for storing of values that may change and cause re-rendering)
@@ -82,15 +81,14 @@ export default function Home() {
 	};
 	
 
-	// Function calls `buyCoffee` from our smart contract.
-	const buyCoffee = async (price, tip, productName) => {
+	// Function calls `buyProduct` from our smart contract.
+	const buyProduct = async (price, tip, productName) => {
 		try {
 			
-			// Calculating total amount owed
+			// Calculating total amount customer owes.
 			const priceInWei = BigInt(ethers.parseEther(price));
 			const tipInWei = BigInt(ethers.parseEther(tip));
 			const totalPriceInWei = priceInWei + tipInWei;
-			//const productName = 'Coffee'
 
 			const { ethereum } = window;
 
@@ -98,17 +96,17 @@ export default function Home() {
 				// instantiate contract. Notice provider is now metamask wallet!
 				const provider = new ethers.BrowserProvider(ethereum, 'any')
 				const signer = await provider.getSigner();
-				const buyMeACoffee = new ethers.Contract(
+				const paymentHandler = new ethers.Contract(
 					contractAddress,
 					contractABI,
 					signer
 				);
 
-				// Calls `buyCoffee` function from smart contract
-				// Passes in name, message, total price
-				// value is the actual override indicating amount of eth to be sent with transaction.
+				// Calls `buyProduct` function from smart contract
+				// Passes in name, message, total price, product name and override value.
+				// `value` is the actual override indicating amount of eth to be sent with transaction.
 				console.log('Processing item purchase, please wait...');
-				const coffeeTxn = await buyMeACoffee.buyCoffee(
+				const Txn = await paymentHandler.buyProduct(
 					name ? name : 'Anonymous',
 					message ? message : 'None.',
 					totalPriceInWei,
@@ -116,10 +114,10 @@ export default function Home() {
 					{ value: totalPriceInWei.toString() }
 				);
 
-				// wait for tx to be mined, update counter and log hash.
-				await coffeeTxn.wait();
+				// wait for tx to be mined, get and update counter and log hash.
+				await Txn.wait();
 				getTotalPurchases();
-				console.log('Item successfully purchased! On chain tx hash receipt: ', coffeeTxn.hash);
+				console.log('Item successfully purchased! On chain tx hash receipt: ', Txn.hash);
 
 				// Clear the form fields.
 				setName('');
@@ -138,7 +136,7 @@ export default function Home() {
 			if (ethereum) {
 				const provider = new ethers.BrowserProvider(ethereum);
 				const signer = await provider.getSigner();
-				const buyMeACoffee = new ethers.Contract(
+				const paymentHandler = new ethers.Contract(
 					contractAddress,
 					contractABI,
 					signer
@@ -148,7 +146,7 @@ export default function Home() {
 				// But calling getMemos externally through react, it doesn't see the data as an array of structs
 				// Instead it sees it as an array of arrays, since each struct has multiple 'indexes'.
 				// Therefore we need to parse each 'index' (specific struct type) from each array.
-				const rawMemos = await buyMeACoffee.getMemos();
+				const rawMemos = await paymentHandler.getMemos();
 				const parsedMemos = rawMemos.map(memo => ({
 					address: memo[0],
 					timestamp: new Date(Number(memo[1]) * 1000), // Convert from UNIX timestamp
@@ -171,10 +169,10 @@ export default function Home() {
 	const getTotalPurchases = async () => {
 		// Notice signer not needed to instantiate contract, simply fetching data from on chain.
 		const provider = new ethers.BrowserProvider(ethereum, 'any');
-		const buyMeACoffee = new ethers.Contract(contractAddress, contractABI, provider);
+		const paymentHandler = new ethers.Contract(contractAddress, contractABI, provider);
 		// Solidity auto-generates getter functions, which are same as the variable name
 		// For public state variables, so you can simply call them and fetch the data!
-		const totalPurchases = await buyMeACoffee.totalPurchases();
+		const totalPurchases = await paymentHandler.totalPurchases();
 		setPurchaseCounter(totalPurchases.toString());
 	};	  
 
@@ -184,7 +182,7 @@ export default function Home() {
 	useEffect(() => {
 
 		// Call functions to check and grab current status.
-		let buyMeACoffee;
+		let paymentHandler;
 		isWalletConnected();
 		getMemos();
 		getTotalPurchases();
@@ -212,15 +210,15 @@ export default function Home() {
 			if (ethereum) {
 				const provider = new ethers.BrowserProvider(ethereum, 'any');
 				const signer = await provider.getSigner();
-				buyMeACoffee = new ethers.Contract(contractAddress, contractABI, signer);
+				paymentHandler = new ethers.Contract(contractAddress, contractABI, signer);
 				// attach event listener to contract, if `NewMemo` is emitted, `onNewMemo` will be called.
-				buyMeACoffee.on('NewMemo', onNewMemo);
+				paymentHandler.on('NewMemo', onNewMemo);
 			}
 		})();
 		// cleanup and remove event listener
 		return () => {
-			if (buyMeACoffee) {
-				buyMeACoffee.off('NewMemo', onNewMemo);
+			if (paymentHandler) {
+				paymentHandler.off('NewMemo', onNewMemo);
 			}
 		};
 	}, []);
@@ -258,20 +256,20 @@ export default function Home() {
 
 								<textarea
 									rows={3}
-									placeholder="None."
+									placeholder=""
 									id="message"
 									onChange={onMessageChange}
 									required
 								/>
 							</div>
 							<div>
-								<button type="button" onClick={() => buyCoffee('0.001', tip, 'Small Coffee')}>Buy 1 Coffee for 0.001 ETH</button>
+								<button type="button" onClick={() => buyProduct('0.001', tip, 'Small Coffee')}>Buy 1 Small Coffee for 0.001 ETH</button>
 							</div>
 							<div>
-								<button type="button" onClick={() => buyCoffee('0.003', tip, 'Large Coffee')}>Buy 1 Large Coffee for 0.003 ETH</button>
+								<button type="button" onClick={() => buyProduct('0.003', tip, 'Large Coffee')}>Buy 1 Large Coffee for 0.003 ETH</button>
 							</div>
 							<div>
-								<label>Buy with Custom Amount (ETH)</label>
+								<label>Buy Donut for any amount of ETH</label>
 								<br />
 								<input 
 									type="number"
@@ -280,7 +278,7 @@ export default function Home() {
 									value={customAmount}
 									onChange= {onCustomAmountChange}
 								/>
-								<div><button type="button" onClick={() => buyCoffee(customAmount, tip, 'Donut')}>Buy with Custom Amount</button></div>
+								<div><button type="button" onClick={() => buyProduct(customAmount, tip, 'Donut')}>Buy Donut</button></div>
 							</div>
 							<div>
 								<label>Include tip? (ETH)</label>
@@ -311,7 +309,7 @@ export default function Home() {
 						style={{border: '2px solid', borderRadius: '5px', padding: '5px', margin: '5px'}}
 						>
 							<p style={{ fontWeight: 'bold' }}>{memo.name} purchased {memo.productName} for {memo.totalPrice} ETH</p>
-							<p>Customer's Message: {memo.message}</p>
+							<p>Customer's Message: "{memo.message}"</p>
 							<p>{memo.timestamp.toString()}</p>
 						</div>
 					);

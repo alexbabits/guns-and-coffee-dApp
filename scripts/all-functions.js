@@ -15,7 +15,7 @@ async function printBalances(addresses) {
   }
 }
 
-// Logs the memos stored on-chain from coffee purchases.
+// Logs the memos stored on-chain from product purchases.
 async function printMemos(memos) {
   for (const memo of memos) {
     const timestamp = memo.timestamp;
@@ -32,34 +32,34 @@ async function printMemos(memos) {
 async function main() {
 
   // Deploy the contract. Wait for the contract to be deployed. Log the contract address.
-  const buyMeACoffee = await hre.ethers.deployContract("BuyMeACoffee");
-  await buyMeACoffee.waitForDeployment();
-  console.log(`Deployed BuyMeACoffee.sol at address: ${buyMeACoffee.target}`)
+  const paymentHandler = await hre.ethers.deployContract("PaymentHandler");
+  await paymentHandler.waitForDeployment();
+  console.log(`Deployed PaymentHandler.sol at address: ${paymentHandler.target}`)
 
   // Get the example accounts and their addresses we'll be working with.
   const [owner, customer, customer2, customer3] = await hre.ethers.getSigners();
-  const addresses = [owner.address, customer.address, customer2.address, customer3.address, buyMeACoffee.target];
+  const addresses = [owner.address, customer.address, customer2.address, customer3.address, paymentHandler.target];
 
-  // Check balances before the coffee purchase.
+  // Check balances before the product purchase.
   console.log("printing starting balances...");
   await printBalances(addresses);
 
-  // customers connect to contract and buy coffee.
+  // customers connect to contract and buy a product.
   // totalPriceInWeiValue is the override actual value that gets passed as an optional parameter.
   // totalPriceInWei is the simulated frontend price that the user will choose.
-  const totalPriceInWeiValue = {value: hre.ethers.parseEther("1")};
   const totalPriceInWei = hre.ethers.parseEther("1");
   const productName = 'Coffee'
-  await buyMeACoffee.connect(customer).buyCoffee("Carolina", "You're the best!", totalPriceInWei, productName, totalPriceInWeiValue);
-  await buyMeACoffee.connect(customer2).buyCoffee("Vitto", "Amazing teacher", totalPriceInWei, productName, totalPriceInWeiValue);
-  await buyMeACoffee.connect(customer3).buyCoffee("Kay", "I love my Proof of Knowledge", totalPriceInWei, productName, totalPriceInWeiValue);
+  const totalPriceInWeiValue = {value: hre.ethers.parseEther("1")};
+  await paymentHandler.connect(customer).buyProduct("Kyle", "black no cream no sugar.", totalPriceInWei, productName, totalPriceInWeiValue);
+  await paymentHandler.connect(customer2).buyProduct("Vitto", "Thanks!", totalPriceInWei, productName, totalPriceInWeiValue);
+  await paymentHandler.connect(customer3).buyProduct("Chloe", "Extra sugar please!", totalPriceInWei, productName, totalPriceInWeiValue);
 
-  // Check balances after the coffee purchases.
+  // Check balances after the product purchases.
   console.log(`== bought ${productName} ==`);
   await printBalances(addresses);
 
   // Withdraw funds to the owner (address 0).
-  await buyMeACoffee.connect(owner).withdrawFunds();
+  await paymentHandler.connect(owner).withdrawFunds();
 
   // Check balances after owner withdraws.
   console.log("== Owner Withdrew Funds ==");
@@ -67,9 +67,8 @@ async function main() {
 
   // Look at the memos.
   console.log("== memos ==");
-  const memos = await buyMeACoffee.getMemos();
+  const memos = await paymentHandler.getMemos();
   printMemos(memos);
-
 }
 
 main().catch((error) => {
