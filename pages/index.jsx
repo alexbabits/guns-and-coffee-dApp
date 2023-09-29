@@ -299,20 +299,15 @@ export default function Home() {
 
 			{currentAccount && <h1>Messages from Customers</h1>}
 			{currentAccount &&
-				memos.map((memo, idx) => {
+				memos.map((memo, i) => {
 					return (
-						<div
-							key={idx}
-							style={{
-								border: '2px solid',
-								borderRadius: '5px',
-								padding: '5px',
-								margin: '5px'
-							}}
+						<div 
+						key={i}
+						style={{border: '2px solid', borderRadius: '5px', padding: '5px', margin: '5px'}}
 						>
-							<p>{memo.name} purchased an item on {memo.timestamp.toString()}</p>
+							<p style={{ fontWeight: 'bold' }}>{memo.name} purchased an item on {memo.timestamp.toString()}</p>
 							<p>Value: {memo.totalPrice} ETH</p>
-							<p style={{ fontWeight: 'bold' }}>"Special Message: {memo.message}"</p>
+							<p>Special Message: {memo.message}</p>
 						</div>
 					);
 				})}

@@ -19,10 +19,10 @@ async function printBalances(addresses) {
 async function printMemos(memos) {
   for (const memo of memos) {
     const timestamp = memo.timestamp;
-    const tipper = memo.name;
-    const tipperAddress = memo.from;
+    const customer = memo.name;
+    const customerAddress = memo.from;
     const message = memo.message;
-    console.log(`At ${timestamp}, ${tipper} (${tipperAddress}) said: "${message}"`);
+    console.log(`At ${timestamp}, ${customer} (${customerAddress}) said: "${message}"`);
   }
 }
 
@@ -34,28 +34,31 @@ async function main() {
   console.log(`Deployed BuyMeACoffee.sol at address: ${buyMeACoffee.target}`)
 
   // Get the example accounts and their addresses we'll be working with.
-  const [owner, tipper, tipper2, tipper3] = await hre.ethers.getSigners();
-  const addresses = [owner.address, tipper.address, tipper2.address, tipper3.address, buyMeACoffee.target];
+  const [owner, customer, customer2, customer3] = await hre.ethers.getSigners();
+  const addresses = [owner.address, customer.address, customer2.address, customer3.address, buyMeACoffee.target];
 
   // Check balances before the coffee purchase.
   console.log("printing starting balances...");
   await printBalances(addresses);
 
-  // tippers connect to contract and buy coffee.
-  const tip = {value: hre.ethers.parseEther("1")};
-  await buyMeACoffee.connect(tipper).buyCoffee("Carolina", "You're the best!", tip);
-  await buyMeACoffee.connect(tipper2).buyCoffee("Vitto", "Amazing teacher", tip);
-  await buyMeACoffee.connect(tipper3).buyCoffee("Kay", "I love my Proof of Knowledge", tip);
+  // customers connect to contract and buy coffee.
+  // totalPriceInWeiValue is the override actual value that gets passed as an optional parameter.
+  // totalPriceInWei is the simulated frontend price that the user will choose.
+  const totalPriceInWeiValue = {value: hre.ethers.parseEther("1")};
+  const totalPriceInWei = hre.ethers.parseEther("1");
+  await buyMeACoffee.connect(customer).buyCoffee("Carolina", "You're the best!", totalPriceInWei, totalPriceInWeiValue);
+  await buyMeACoffee.connect(customer2).buyCoffee("Vitto", "Amazing teacher", totalPriceInWei, totalPriceInWeiValue);
+  await buyMeACoffee.connect(customer3).buyCoffee("Kay", "I love my Proof of Knowledge", totalPriceInWei, totalPriceInWeiValue);
 
   // Check balances after the coffee purchases.
   console.log("== bought coffee ==");
   await printBalances(addresses);
 
   // Withdraw funds to the owner (address 0).
-  await buyMeACoffee.connect(owner).withdrawTips();
+  await buyMeACoffee.connect(owner).withdrawFunds();
 
   // Check balances after owner withdraws.
-  console.log("== Owner Withdrew Tips ==");
+  console.log("== Owner Withdrew Funds ==");
   await printBalances(addresses);
 
   // Look at the memos.
