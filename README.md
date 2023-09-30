@@ -40,7 +40,7 @@ Allows users to purchase various products with (Sepolia) Ethereum using metamask
 - Put customer receipts into a backend database.
 - Stop MetaMask from auto popping up when user is not connected, seemingly without ever invoking `eth_requestAccounts`. May be due to an antiquated way in how I'm setting up metamask connection.
 - Disconnect Metamask button with proper functionality rather than logout button.
-- Better Styling.
+- Better Styling & tailwind css
 
 
 ## References:
