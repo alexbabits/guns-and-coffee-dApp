@@ -1,50 +1,48 @@
-## Setup
-- Clone repo, requires `npm install solc` if don't have yet.
-- `npm init -y` and `npm install` to install local dependencies. (NOTE: This uses hardhat-toolbox package which is all we need now, rather than all the separate packages from hardhat shown in the original Alchemy tutorial.)
-- Have a metamask dev wallet, alchemy account.
-- Fill .env with valid information based on .env.example
+## Overview
+Allows users to purchase various products with (Sepolia) Ethereum using metamask at `https://web3-coffee-next-app.vercel.app/`. 
+
+### Core Files:
+- `PaymentHandler.sol` allows customers to invoke the `buyProduct` function to send funds to the deployed contract address using metamask as their signer and provider. The `owner` of the smart contract can invoke `withdrawFunds` to gather any current profits.
+- `index.jsx` integrates the contract logic into the frontend, and handles the metamask setup. 
+
+### Core Details:
+- Users can choose to buy a virtual small coffee for 0.001 ETH, large coffee for 0.003 ETH, or donut for any price greater than 0.001 ETH. They can choose to include a tip with their purchase. They can remain anonymous, or include their name and a message.
+- Using `Memo` as a custom struct for receipts, memos record the customers purchase details (name, special message, timestamp, total price, and product name) emitting the event on chain and displaying the receipt on the website. 
+- There is a counter fetching total number of purchases made, and a logout button which forgets the users metamask address.
 
 
-## Summary
-1. Wrote and Deployed a custom smart contract to Sepolia which allows for users to send ETH tips to the deployed contract address.
-2. Owner can withdraw funds from the contract.
-3. Wrote scripts to make sure all the functionality worked.
-4. Integrated smart contract into front end. Also allows for metamask integration
-***NOTE: When you deploy your contract, it will have it's own address. Populate it's address in the `withdraw.js` and `index.jsx` files.***
+## Setup (Tips for Myself)
+- `npm init -y` and `npm install` to install dependencies.
+- Fill `.env` with valid information.
+- Uses ethers 6.7.1 for the frontend with next.js, and 6.4.0 with hardhat-toolbox. (Notes: ethers v6 requires `await` for the signer, and no longer requires the `utils` property, among other various syntax tweaks.)
+- Requires `.next` folder, either through `create-react-app` or `repl.it`.
+- When you deploy your contract, it will have it's own address. Populate the address in `withdraw.js` and `index.jsx` files.
+
 
 ## Commands
-- `npx hardhat run scripts/deploy.js` if you only want to deploy the contract to local hardhat instance and nothing else.
-- `npx hardhat run scripts/all-functions.js` can be used to deploy and then test all the functionality on the local hardhat instance. 
-- `npx hardhat run scripts/deploy.js --network sepolia` used to deploy onto Sepolia.
-- `npx hardhat run scripts/withdraw.js` can be used once contract is deployed and it some ether from tips someone or yourself send it, you can execute this script to withdraw funds to owner (you). 
-- `npm run dev` to run server and see on `http://localhost:3000`
+- `npx hardhat run scripts/deploy.js` Deploys the contract to local Hardhat development network.
+- `npx hardhat run scripts/all-functions.js` Invokes all functions within `PaymentHandler.sol` testing all the functionality on the local development network.
+- `npx hardhat run scripts/deploy.js --network sepolia` Deploys the contract onto Sepolia testnet.
+- `npx hardhat run scripts/withdraw.js` Withdraws funds to the owner of the contract, once the contract is deployed and it has some ether from customer purchases.
+- `npm run dev` to run local server and see on `http://localhost:3000`
+- `vercel` to deploy on their server.
+- `https://web3-coffee-next-app.vercel.app/` to view the deployed project on Vercel's server.
 
 
-## Scripts
-- `deploy.js` does work to deploy to local hardhat instance
-- `all-functions.js` does work within that instance as well to deploy and do all the functions.
-- `withdraw.js` works successfully with sepolia.
+## Future Features
+- Allow customers to purchase items with any ERC-20. (requires grabbing a general ERC-20 ABI to interact with. Start with LINK or USDC).
+- Put customer receipts into a backend database.
+- Stop MetaMask from auto popping up when user is not connected, seemingly without ever invoking `eth_requestAccounts`. May be due to an antiquated way in how I'm setting up metamask connection.
+- Disconnect Metamask button with proper functionality rather than logout button.
+- Better Styling.
+- Memos top to bottom instead of populating on the bottom.
 
-
-## Important:
-- Uses ethers 6.7.1 for the frontend with next.js, and 6.4.0 with hardhat-toolbox.
-- Fixed index.jsx (using await for the signer, and some other v6 ethers syntax updates)
-
-## Goals
-- Better Styling
-- purchase items with any ERC-20. (requires grabbing a general ERC-20 ABI to interact with. Start with LINK or USDC)
-- Link paying customers into a database backend.
-
-## To Do
-3. Make frontend next.js/react files more simple with `create-react-app` or something similar. (optional)
-Do (npx create-next-app new-project-name) in a new project, then bring that shit over, and see if it works.
-4. Deploy on vercel
 
 ## References:
 - https://docs.alchemy.com/docs/how-to-build-buy-me-a-coffee-defi-dapp
 - https://sepolia.etherscan.io
 - https://docs.ethers.org/v6/
-- https://docs.metamask.io/
 - https://hardhat.org/docs
+- https://docs.metamask.io/
 
 ![ok](public/1.png)

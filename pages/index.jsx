@@ -40,7 +40,7 @@ export default function Home() {
 			// Grabs ethereum API from the window and allows you to use it within the function
 			const { ethereum } = window;
 			// .request sends JSON-RPC requests to blockchain, in our case looking for the users accounts.
-			const accounts = await ethereum.request({ method: 'eth_accounts' });
+			const accounts = await ethereum.request({ method: 'eth_accounts'});
 			console.log('accounts: ', accounts);
 
 			if (accounts.length > 0) {
@@ -151,7 +151,7 @@ export default function Home() {
 				// getMemos function works fine in solidity code, understanding the structs.
 				// But calling getMemos externally through react, it doesn't see the data as an array of structs
 				// Instead it sees it as an array of arrays, since each struct has multiple 'indexes'.
-				// Therefore we need to parse each 'index' (specific struct type) from each array.
+				// Therefore we need to parse each 'index' (specific struct type) from each array in correct order.
 				const rawMemos = await paymentHandler.getMemos();
 				const parsedMemos = rawMemos.map(memo => ({
 					address: memo[0],
@@ -177,7 +177,7 @@ export default function Home() {
 		const provider = new ethers.BrowserProvider(ethereum, 'any');
 		const paymentHandler = new ethers.Contract(contractAddress, contractABI, provider);
 		// Solidity auto-generates getter functions, which are same as the variable name
-		// For public state variables, so you can simply call them and fetch the data!
+		// for public state variables, so you can simply call them and fetch the data!
 		const totalPurchases = await paymentHandler.totalPurchases();
 		setPurchaseCounter(totalPurchases.toString());
 	};	  
@@ -234,13 +234,13 @@ export default function Home() {
 		<div className={styles.underlay}></div>
 		<div className={styles.container}>
 			<Head>
-				<title>Products for Sale!</title>
+				<title>Guns & Coffee</title>
 				<meta name="description" content="E-commerce Site" />
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
 			<main className={styles.main}>
-				<h1 className={styles.title}>We Sell Products!</h1>
+				<h1 className={styles.title}>Guns & Coffee</h1>
 
 				{currentAccount ? (
 					<div>
@@ -259,7 +259,7 @@ export default function Home() {
 							</div>
 							<br />
 							<div>
-								<label>Send us a message!</label>
+								<label>Message with purchase</label>
 								<br />
 
 								<textarea
