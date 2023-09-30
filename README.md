@@ -38,7 +38,7 @@ Allows users to purchase various products with (Sepolia) Ethereum using metamask
 ## Future Features
 - Allow customers to purchase items with any ERC-20. (requires grabbing a general ERC-20 ABI to interact with. Start with LINK or USDC).
 - Put customer receipts into a backend database.
-- Stop MetaMask from auto popping up when user is not connected, seemingly without ever invoking `eth_requestAccounts`. May be due to an antiquated way in how I'm setting up metamask connection.
+- Stop MetaMask from auto popping up when user is not connected, seemingly without ever invoking `eth_requestAccounts`. May be due to an antiquated way in how I'm setting up metamask connection. (https://docs.metamask.io/wallet/how-to/connect/access-accounts/)
 - Disconnect Metamask button with proper functionality rather than logout button.
 - Better Styling & tailwind css
 
