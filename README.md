@@ -1,6 +1,8 @@
 ## Overview
 Allows users to purchase various products with (Sepolia) Ethereum using metamask at `https://web3-coffee-next-app.vercel.app/`. 
 
+<img src="public/1.gif" alt="Your GIF" />
+
 ### Core Files:
 - `PaymentHandler.sol` allows customers to invoke the `buyProduct` function to send funds to the deployed contract address using metamask as their signer and provider. The `owner` of the smart contract can invoke `withdrawFunds` to gather any current profits.
 - `index.jsx` integrates the contract logic into the frontend, and handles the metamask setup. 
@@ -18,10 +20,7 @@ Allows users to purchase various products with (Sepolia) Ethereum using metamask
 - Requires `.next` folder, either through `create-react-app` or `repl.it`.
 - When you deploy your contract, it will have it's own address. Populate the address in `withdraw.js` and `index.jsx` files.
 - `withdraw.js` and `index.jsx` grab the contracts ABI (.json) from the currently deployed contract in `artifacts` folder. 
-<video controls>
-  <source src="public/1.mp4" type="video/mp4" />
-  Your browser does not support the video tag.
-</video>
+
 
 ## Commands
 - `npx hardhat run scripts/deploy.js` Deploys the contract to local Hardhat development network.
