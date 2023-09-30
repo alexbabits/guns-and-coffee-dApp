@@ -44,4 +44,4 @@ Allows users to purchase various products with (Sepolia) Ethereum using metamask
 - https://hardhat.org/docs
 - https://docs.metamask.io/
 
-![ok](public/1.png)
+![ok](public/3.png)
