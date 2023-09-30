@@ -18,17 +18,19 @@ export default function Home() {
 	const [name, setName] = useState('');
 	const [message, setMessage] = useState('');
 	const [memos, setMemos] = useState([]);
-	const [customAmount, setCustomAmount] = useState("0.001");
+	const [donutPrice, setDonutPrice] = useState("0.001");
+	const [ammoAmount, setAmmoAmount] = useState("10");
 	const [tip, setTip] = useState("0.001");
 	const [purchaseCounter, setPurchaseCounter] = useState(0); 
 	const [isLoading, setIsLoading] = useState(false);
 
 
-	// event handler functions for 'onChange' events. Updates the name/message/customAmount variables state.
+	// event handler functions for 'onChange' events. Updates the variables state.
 	// Ensures that the displayed value and state value are always in sync.
 	const onNameChange = event => {setName(event.target.value)};
 	const onMessageChange = event => {setMessage(event.target.value)};
-	const onCustomAmountChange = event => {setCustomAmount(event.target.value)};
+	const onDonutPriceChange = event => {setDonutPrice(event.target.value)};
+	const onAmmoAmountChange = event => {setAmmoAmount(event.target.value)};
 	const onTipChange = event => {setTip(event.target.value)};
 
 	// `ethereum` is a global API injected into the browser by MetaMask (or other Ethereum wallets/extensions).
@@ -108,11 +110,11 @@ export default function Home() {
 				// Passes in name, message, total price, product name and override value.
 				// `value` is the actual override indicating amount of eth to be sent with transaction.
 				setIsLoading(true);
-				console.log('Processing item purchase, please wait...');
+				console.log('Processing product purchase, please wait...');
 
 				const Txn = await paymentHandler.buyProduct(
-					name ? name : 'Anonymous',
-					message ? message : 'None.',
+					name ? name : "Anonymous",
+					message ? message : "",
 					totalPriceInWei,
 					productName,
 					{ value: totalPriceInWei.toString() }
@@ -122,7 +124,7 @@ export default function Home() {
 				await Txn.wait();
 				setIsLoading(false);
 				getTotalPurchases();
-				console.log('Item successfully purchased! On chain tx hash receipt: ', Txn.hash);
+				console.log('Product successfully purchased! On chain tx hash receipt: ', Txn.hash);
 
 				// Clear the form fields.
 				setName('');
@@ -231,117 +233,144 @@ export default function Home() {
 
 	return (
 		<>
-		<div className={styles.underlay}></div>
-		<div className={styles.container}>
-			<Head>
-				<title>Guns & Coffee</title>
-				<meta name="description" content="E-commerce Site" />
-				<link rel="icon" href="/favicon.ico" />
-			</Head>
+			<div className={styles.underlay}></div>
+			<div className={styles.container}>
+				<Head>
+					<title>Guns & Coffee</title>
+					<meta name="description" content="E-commerce Site" />
+					<link rel="icon" href="/favicon.ico" />
+				</Head>
+				
+				<main className={styles.main}>
+					<h1 className={styles.title}>Guns & Coffee</h1>
+					{currentAccount ? (
+						<div className={styles.columns}>
 
-			<main className={styles.main}>
-				<h1 className={styles.title}>Guns & Coffee</h1>
+							<div className={styles.column}>
+								<div>
+										<label>Name</label>
+										<br />
+										<input
+											id="name"
+											type="text"
+											placeholder="Anonymous"
+											onChange={onNameChange}
+										/>
+								</div><br/>
+								<div>
+										<label>Message with purchase</label>
+										<br />
+										<textarea
+											rows={5}
+											placeholder=""
+											id="message"
+											onChange={onMessageChange}
+											required
+										/>
+								</div><br/>
+								<div>
+										<label>Include tip? (ETH)</label>
+										<br />
+										<input 
+											type="number"
+											step="0.001"
+											min="0.0"
+											value={tip}
+											onChange= {onTipChange}
+										/>
+								</div>
+								<Image src="/tipjar.png" alt="Large Coffee Image" width={50} height={75} /> <br /><br />
+								<div><button onClick={disconnectWallet}> Logout </button></div><br />
+								<div>{isLoading && <div>Waiting for purchase to be validated on chain...</div>}</div><br />
+								<div>{isLoading && <RingLoader color="green" size={100} speedMultiplier={0.5} />}</div>
+							</div>
 
-				{currentAccount ? (
-					<div>
-						<form>
-							<div>
+							<div className={styles.column}>
+								<div>
+									<button type="button" onClick={() => buyProduct('0.001', tip, 'Small Coffee')}>Buy Small Coffee for 0.001 ETH</button>
+								</div>
+								<Image src="/smallcoffee.png" alt="Small Coffee Image" width={50} height={50} /><br/><br/>
+	
+								<div>
+									<button type="button" onClick={() => buyProduct('0.003', tip, 'Large Coffee')}>Buy Large Coffee for 0.003 ETH</button>
+								</div>
+								<Image src="/largecoffee.png" alt="Large Coffee Image" width={50} height={75} />
 								<br />
-								<label>Name</label>
-								<br />
+								<div><br />
+									<input 
+										type="number"
+										step="0.001"
+										min="0.001"
+										value={donutPrice}
+										onChange= {onDonutPriceChange}
+									/>
+									<div><button type="button" onClick={() => buyProduct(donutPrice, tip, 'Donut')}>Buy Donut for {donutPrice} ETH</button></div>
+									<Image src="/donut.png" alt="Coffee Image" width={50} height={50} />
+								</div>
+							</div>
 
-								<input
-									id="name"
-									type="text"
-									placeholder="Anonymous"
-									onChange={onNameChange}
-								/>
+							<div className={styles.column}>
+								<div>
+									<button type="button" onClick={() => buyProduct('0.007', tip, 'M4')}>Buy M4 for 0.007 ETH</button>
+								</div>
+								<Image src="/M4.png" alt="M4 Image" width={100} height={75} /><br/><br/>
+								<div>
+									<button type="button" onClick={() => buyProduct('0.015', tip, 'Sniper Rifle')}>Buy Sniper Rifle for 0.015 ETH</button>
+								</div>
+								<Image src="/sniperrifle.png" alt="Sniper Rifle Image" width={120} height={50} /><br/><br/>
+								<div>
+									<button type="button" onClick={() => buyProduct('0.01', tip, 'Flame Thrower')}>Buy Flame Thrower for 0.01 ETH</button>
+								</div>
+								<Image src="/flamethrower.png" alt="Flame Thrower Image" width={75} height={75} /><br/><br/>
+								<div>
+									<button type="button" onClick={() => buyProduct('0.005', tip, 'Glock')}>Buy Glock for 0.005 ETH</button>
+								</div>
+								<Image src="/glock.png" alt="Glock Image" width={75} height={75} /><br/><br/>
+								<div>
+									<button type="button" onClick={() => buyProduct('0.025', tip, 'Mini Gun')}>Buy MiniGun for 0.025 ETH</button>
+								</div>
+								<Image src="/minigun.png" alt="Mini Gun Image" width={100} height={50} /><br/><br/>
+								<div>
+									<input 
+										type="number"
+										step="1"
+										min="0"
+										value={ammoAmount}
+										onChange= {onAmmoAmountChange}
+									/>
+								<div>
+									<button type="button" onClick={() => buyProduct(`${ammoAmount*0.001}`, tip, 'Ammo')}>Buy {ammoAmount} Ammo for {ammoAmount*0.001} ETH</button>
+								</div>
+								<Image src="/ammo.png" alt="Ammo Image" width={50} height={50} /><br/><br/>
+								</div>
 							</div>
-							<br />
-							<div>
-								<label>Message with purchase</label>
-								<br />
 
-								<textarea
-									rows={3}
-									placeholder=""
-									id="message"
-									onChange={onMessageChange}
-									required
-								/>
+							<div className={styles.column}>
+								<br /><div>Total Purchases: {purchaseCounter}</div><br /><br />
+								{currentAccount && <h1>Customer Receipts</h1>}
+								{currentAccount &&
+									memos.slice().reverse().map((memo, i) => {
+										return (
+											<div key={i} style={{border: '2px solid', borderRadius: '5px', padding: '5px', margin: '10px'}}>
+												<p style={{ fontWeight: 'bold' }}>{memo.name} purchased {memo.productName} for {memo.totalPrice} ETH</p>
+												<p>Customer's Message: "{memo.message}"</p>
+												<p>{memo.timestamp.toString()}</p>
+											</div>
+										);
+									})}
 							</div>
-							<br />
-							<div>
-								<button type="button" onClick={() => buyProduct('0.001', tip, 'Small Coffee')}>Buy 1 Small Coffee for 0.001 ETH</button>
-							</div>
-							<Image src="/smallcoffee.png" alt="Small Coffee Image" width={50} height={50} />
-							<br />
-							<div>
-								<button type="button" onClick={() => buyProduct('0.003', tip, 'Large Coffee')}>Buy 1 Large Coffee for 0.003 ETH</button>
-							</div>
-							<Image src="/largecoffee.png" alt="Large Coffee Image" width={50} height={75} />
-							<br />
-							<div>
-								<label>Buy Donut for any amount of ETH</label>
-								<br />
-								<input 
-									type="number"
-									step="0.001"
-									min="0.001"
-									value={customAmount}
-									onChange= {onCustomAmountChange}
-								/>
-								<div><button type="button" onClick={() => buyProduct(customAmount, tip, 'Donut')}>Buy Donut</button></div>
-								<Image src="/donut.png" alt="Coffee Image" width={50} height={50} />
-							</div>
-							<br />
-							<div>
-								<label>Include tip? (ETH)</label>
-								<br />
-								<input 
-									type="number"
-									step="0.001"
-									min="0.0"
-									value={tip}
-									onChange= {onTipChange}
-								/>
-							</div>
-							<Image src="/tipjar.png" alt="Large Coffee Image" width={50} height={75} />
-							<br /><br />
-							<div><button onClick={disconnectWallet}> Logout </button></div>
-							<br /><br />
-							<div>Total Purchases: {purchaseCounter}</div>
-							<br /><br />
-						</form>
-						{isLoading && <div>Waiting for purchase to be validated on chain...</div>}
-						<br />
-						{isLoading && <RingLoader color="green" size={100} speedMultiplier={0.5} />}
-					</div>
-				) : (
-					<div><button onClick={connectWallet}> Connect your wallet </button></div>
-				)}
-			</main>
-
-			{currentAccount && <h1>Customer Receipts</h1>}
-			{currentAccount &&
-				memos.map((memo, i) => {
-					return (
-						<div 
-						key={i}
-						style={{border: '2px solid', borderRadius: '5px', padding: '5px', margin: '5px'}}
-						>
-							<p style={{ fontWeight: 'bold' }}>{memo.name} purchased {memo.productName} for {memo.totalPrice} ETH</p>
-							<p>Customer's Message: "{memo.message}"</p>
-							<p>{memo.timestamp.toString()}</p>
 						</div>
-					);
-				})}
+					) : (
+						<div><button onClick={connectWallet}> Connect your wallet </button></div>
+					)}
+				</main>
 
-			<footer className={styles.footer}>
-				<p><a href="https://github.com/alexbabits" color="#edc841" target="_blank" rel="noopener noreferrer">Created by Alex Babits</a></p>
-				<p><a href="https://docs.alchemy.com/docs/how-to-build-buy-me-a-coffee-defi-dapp" color="#edc841" target="_blank" rel="noopener noreferrer">Inspired by @thatguyintech</a></p>
-			</footer>
-		</div>
+				<footer className={styles.footer}>
+					<p><a href="https://github.com/alexbabits" color="#edc841" target="_blank" rel="noopener noreferrer">Created by Alex Babits</a></p>
+					<p><a href="https://docs.alchemy.com/docs/how-to-build-buy-me-a-coffee-defi-dapp" color="#edc841" target="_blank" rel="noopener noreferrer">Inspired by @thatguyintech</a></p>
+				</footer>
+
+			</div>
 		</>
 	);
 }
