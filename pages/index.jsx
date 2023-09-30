@@ -246,7 +246,7 @@ export default function Home() {
 					{currentAccount ? (
 						<div className={styles.columns}>
 
-							<div className={styles.column}>
+							<div className={styles.column1}>
 								<div>
 										<label>Name</label>
 										<br />
@@ -285,7 +285,7 @@ export default function Home() {
 								<div>{isLoading && <RingLoader color="green" size={100} speedMultiplier={0.5} />}</div>
 							</div>
 
-							<div className={styles.column}>
+							<div className={styles.column2}>
 								<div>
 									<button type="button" onClick={() => buyProduct('0.001', tip, 'Small Coffee')}>Buy Small Coffee for 0.001 ETH</button>
 								</div>
@@ -309,7 +309,7 @@ export default function Home() {
 								</div>
 							</div>
 
-							<div className={styles.column}>
+							<div className={styles.column3}>
 								<div>
 									<button type="button" onClick={() => buyProduct('0.007', tip, 'M4')}>Buy M4 for 0.007 ETH</button>
 								</div>
@@ -345,9 +345,9 @@ export default function Home() {
 								</div>
 							</div>
 
-							<div className={styles.column}>
-								<br /><div>Total Purchases: {purchaseCounter}</div><br /><br />
-								{currentAccount && <h1>Customer Receipts</h1>}
+							<div className={styles.column4}>
+								<br /><h2>Total Purchases: {purchaseCounter}</h2>
+								{currentAccount && <h2>Customer Receipts</h2>}
 								{currentAccount &&
 									memos.slice().reverse().map((memo, i) => {
 										return (

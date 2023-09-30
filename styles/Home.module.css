@@ -3,8 +3,6 @@
   padding: 0 0.5rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
   z-index: 1;
 }
 
@@ -15,7 +13,7 @@
 }
 
 .main {
-  padding: 5rem 0;
+  padding: 0;
   color: #edc841;
   flex: 1;
   display: flex;
@@ -27,13 +25,28 @@
 
 .columns {
   display: flex;
-  justify-content: space-between;  /* evenly space out the columns */
-  padding: 0 0%;  /* gives 5% padding from left and right */
+  justify-content: space-between;
+  padding: 0 0%;
 }
 
-.column {
-  flex: 1;  /* each column takes up equal width */
-  padding: 0 1%;  /* padding between columns */
+.column1 {
+  flex: 1;
+  padding: 0 0%;
+}
+
+.column2 {
+  flex: 1;
+  padding: 0 0%;
+}
+
+.column3 {
+  flex: 1;
+  padding: 0 0%;
+}
+
+.column4 {
+  flex: 1;
+  padding: 0 0%; 
 }
 
 .footer {
@@ -46,7 +59,6 @@
   align-items: center;
   z-index: 1;
 }
-
 
 .underlay {
   position: fixed;
