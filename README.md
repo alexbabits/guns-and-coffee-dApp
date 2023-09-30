@@ -1,14 +1,14 @@
 ## Overview
-Allows users to purchase various products with (Sepolia) Ethereum using metamask at `https://web3-coffee-next-app.vercel.app/`. 
+Allows users to purchase various products with (Sepolia) Ethereum using metamask at `https://guns-and-coffee-dapp.vercel.app/`. 
 
-<img src="public/1.gif" alt="Your GIF" />
+<img src="public/overview.gif" alt="Overview Gif" />
 
 ### Core Files:
 - `PaymentHandler.sol` allows customers to invoke the `buyProduct` function to send funds to the deployed contract address using metamask as their signer and provider. The `owner` of the smart contract can invoke `withdrawFunds` to gather any current profits.
 - `index.jsx` integrates the contract logic into the frontend, and handles the metamask setup. 
 
 ### Core Details:
-- Users can choose to buy a virtual small coffee for 0.001 ETH, large coffee for 0.003 ETH, or donut for any price greater than 0.001 ETH. They can choose to include a tip with their purchase. They can remain anonymous, or include their name and a message.
+- Users can choose to buy from an assorment of items. They can choose to include a tip with their purchase. They can remain anonymous, or include their name and a message.
 - Using `Memo` as a custom struct for receipts, memos record the customers purchase details (name, special message, timestamp, total price, and product name) emitting the event on chain and displaying the receipt on the website. 
 - There is a counter fetching total number of purchases made, and a logout button which forgets the users metamask address.
 
@@ -17,7 +17,7 @@ Allows users to purchase various products with (Sepolia) Ethereum using metamask
 - `npm init -y` and `npm install` to install dependencies.
 - Fill `.env` with valid information.
 - Uses ethers 6.7.1 for the frontend with next.js, and 6.4.0 with hardhat-toolbox. (Notes: ethers v6 requires `await` for the signer, and no longer requires the `utils` property, among other various syntax tweaks.)
-- Requires `.next` folder, either through `create-react-app` or `repl.it`.
+- Requires `.next` folder, create with things like `create-react-app` or `repl.it`.
 - When you deploy your contract, it will have it's own address. Populate the address in `withdraw.js` and `index.jsx` files.
 - `withdraw.js` and `index.jsx` grab the contracts ABI (.json) from the currently deployed contract in `artifacts` folder. 
 
@@ -28,11 +28,11 @@ Allows users to purchase various products with (Sepolia) Ethereum using metamask
 - `npx hardhat run scripts/deploy.js --network sepolia` Deploys the contract onto Sepolia testnet.
 - `npx hardhat run scripts/withdraw.js` Withdraws funds to the owner of the contract, once the contract is deployed and it has some ether from customer purchases.
 
-![withdraw and etherscan](public/3.png)
+![withdraw and etherscan](public/withdraw.png)
 
 - `npm run dev` to run local server and see on `http://localhost:3000`
 - `vercel` to deploy on their server.
-- `https://web3-coffee-next-app.vercel.app/` to view the deployed project on Vercel's server.
+- `https://guns-and-coffee-dapp.vercel.app/` to view the deployed project on Vercel's server.
 
 
 ## Future Features
